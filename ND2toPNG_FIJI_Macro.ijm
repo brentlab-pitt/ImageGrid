@@ -27,16 +27,27 @@ if (excludeResponse == "yes") {
     channelToExclude = getNumber("Enter the channel number to exclude (1 to " + numberOfColors + "):", 1);
 }
 
+zstackResponse = getString("Do you want to z-stack your images? (yes/no)", "yes");
+
 // Cycle through each image in file
 for (i = 0; i < list.length; i++) { 
     if (endsWith(list[i], ".nd2")) {
         // Open image
         run("Bio-Formats Importer", "open=[" + input + list[i] + "] autoscale color_mode=Colorized rois_import=[ROI manager] view=Hyperstack stack_order=XYCZT");
         
-        // Max intensity z projection 
-        run("Z Project...", "projection=[Max Intensity]"); 
-        imageName = getTitle();
-        print(imageName);
+        if (zstackResponse == "yes") {
+            // Max intensity z projection 
+            run("Z Project...", "projection=[Max Intensity]"); 
+            imageName = getTitle();
+            print(imageName);
+        } else {
+            imageName = getTitle();
+            print(imageName);
+        }
+        // // Max intensity z projection 
+        // run("Z Project...", "projection=[Max Intensity]"); 
+        // imageName = getTitle();
+        // print(imageName);
         
         // Duplicate image, merge duplicate, then save merged image as png
         run("Duplicate...", "duplicate");
